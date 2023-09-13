@@ -45,7 +45,7 @@ trait ResponseGeneratorTrait
 
     public function error($data, $response_code, $header_code)
     {
-        return $this->setHasError(true)->setHeaderCode($response_code)->setResponseCode($response_code)
+        return $this->setHasError(true)->setHeaderCode($header_code)->setResponseCode($response_code)
             ->getResponse($data);
     }
 }

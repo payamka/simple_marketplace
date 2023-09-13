@@ -4,7 +4,7 @@ namespace App\Traits\V1;
 
 trait ResponseCodesTrait
 {
-    const RESPONSE_FAIL = -1;
-    const RESPONSE_OK = 100;
-    const RESPONSE_NOT_AUTHORIZED = 99;
+    protected static $RESPONSE_FAIL = -1;
+    protected static $RESPONSE_OK = 100;
+    protected static $RESPONSE_NOT_AUTHORIZED = 99;
 }

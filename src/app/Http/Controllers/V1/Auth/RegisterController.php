@@ -9,13 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
-    public function __construct(private iUserService $user_service){}
+    public function __construct(private iUserService $user_service)
+    {
+    }
 
     public function store(RegisterRequest $request)
     {
         $token = $this->user_service->create($request->validated());
 
-        if($token)
-            return $this->success(['token' => $token], 100, Response::HTTP_CREATED);
+        if ($token)
+            return $this->success(['token' => $token], self::$RESPONSE_OK, Response::HTTP_CREATED);
+
+        return $this->success(null, self::$RESPONSE_FAIL, Response::HTTP_NOT_ACCEPTABLE);
     }
 }
