@@ -51,4 +51,12 @@ class ProductService implements iProductService
     {
         $this->product_repo->delete($id, $user_id);
     }
+
+    public function find(int $id): Model|null
+    {
+        return $this->product_repo->find(
+            ['id' => $id],
+            ['images']
+        );
+    }
 }

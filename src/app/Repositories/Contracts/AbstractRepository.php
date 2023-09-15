@@ -23,9 +23,9 @@ class AbstractRepository implements iAbstractRepository
         return $this->getModel()->find($id);
     }
 
-    public function find($criteria, $eager = [])
+    public function find($criteria, $eager = []): Model|null
     {
-        return $this->getModel()->with($eager)->where($criteria);
+        return $this->getModel()->with($eager)->where($criteria)->first();
     }
 
     public function delete(int $item_id, int|null $user_id = null): void
