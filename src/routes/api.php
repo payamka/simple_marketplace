@@ -8,11 +8,8 @@ use App\Http\Controllers\V1\Product\ProductController;
 
 Route::post('register', [RegisterController::class, 'store']);
 Route::post('login', [LoginController::class, 'show']);
-
-Route::middleware(['auth:sanctum'])->group(function () {
-    Route::resource('product', ProductController::class);
-});
+Route::resource('product', ProductController::class)->except(['destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('product', ProductController::class);
+    Route::resource('product', ProductController::class)->only(['destroy']);
 });

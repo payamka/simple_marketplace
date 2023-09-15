@@ -59,4 +59,9 @@ class ProductService implements iProductService
             ['images']
         );
     }
+
+    public function list(int $count): mixed
+    {
+        return $this->product_repo->list($count, ['images']);
+    }
 }

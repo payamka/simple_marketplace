@@ -10,4 +10,5 @@ interface iAbstractRepository
     public function getOneById(int $id);
     public function find($criteria, $eager = []): Model|null;
     public function delete(int $item_id, int|null $user_id = null): void;
+    public function list(int $count, array $eager = []): mixed;
 }

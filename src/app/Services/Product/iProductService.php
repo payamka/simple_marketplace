@@ -10,4 +10,5 @@ interface iProductService
     public function create(CreateProductRequest $request): Model;
     public function destroy(int $id, int|null $user_id = null): void;
     public function find(int $id): Model|null;
+    public function list(int $count): mixed;
 }

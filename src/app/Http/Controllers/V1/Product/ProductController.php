@@ -17,7 +17,11 @@ class ProductController extends Controller
     }
     public function index()
     {
-        //
+        $list = $this->product_service->list(20);
+        if($list)
+            return $this->success($list, self::$RESPONSE_OK, Response::HTTP_OK);
+
+        return $this->error(null, self::$RESPONSE_FAIL, Response::HTTP_NO_CONTENT);
     }
 
     public function store(CreateProductRequest $request)
@@ -29,7 +33,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         $product = $this->product_service->find($id);
-        
+
         if($product)
             return $this->success($product, self::$RESPONSE_OK, Response::HTTP_OK);
 

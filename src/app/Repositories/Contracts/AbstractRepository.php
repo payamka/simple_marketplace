@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 
 class AbstractRepository implements iAbstractRepository
@@ -35,5 +36,10 @@ class AbstractRepository implements iAbstractRepository
             $item = $item->where('user_id', $user_id);
 
         $item->delete();
+    }
+
+    public function list(int $count, array $eager = []): mixed
+    {
+        return $this->getModel()->with($eager)->paginate($count);
     }
 }
