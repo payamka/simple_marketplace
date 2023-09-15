@@ -17,4 +17,9 @@ class AbstractRepository implements iAbstractRepository
     {
         return $this->getModel()->create($attributes);
     }
+
+    public function getOneById(int $id)
+    {
+        return $this->getModel()->find($id);
+    }
 }
