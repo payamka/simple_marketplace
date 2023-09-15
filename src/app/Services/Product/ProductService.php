@@ -2,7 +2,10 @@
 
 namespace App\Services\Product;
 
+use App\Http\Requests\V1\Product\CreateProductRequest;
 use App\Repositories\Product\iProductRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,7 +17,7 @@ class ProductService implements iProductService
     {
     }
 
-    public function create($request)
+    public function create(CreateProductRequest $request): Model
     {
         $input = $request->validated();
         $input['user_id'] = Auth::id();
@@ -23,7 +26,7 @@ class ProductService implements iProductService
         return $this->product;
     }
 
-    private function attachImages($images)
+    private function attachImages(array|null $images): Collection
     {
         $path = 'product_images';
 
@@ -42,5 +45,10 @@ class ProductService implements iProductService
             }
 
         return collect($uploaded)->pluck('path');
+    }
+
+    public function destroy(int $id, int|null $user_id = null): void
+    {
+        $this->product_repo->delete($id, $user_id);
     }
 }
