@@ -28,6 +28,6 @@ class SendNewOrderEmail implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to('admin@shop.com')->send(new NewOrderAdded());
+        Mail::to('admin@shop.com')->send(new NewOrderAdded($this->order));
     }
 }
