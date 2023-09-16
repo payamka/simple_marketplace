@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Contracts;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class AbstractRepository implements iAbstractRepository
 {
@@ -24,22 +24,35 @@ class AbstractRepository implements iAbstractRepository
         return $this->getModel()->find($id);
     }
 
+    public function findAllPaginate($criteria, $count, $sort_by = null, $eager = []): mixed
+    {
+        $list = $this->findByCriteria($criteria, $eager);
+        if ($sort_by)
+            $list = $list->orderBy($sort_by, 'asc');
+
+        return $list->paginate($count);
+    }
+
     public function find($criteria, $eager = []): Model|null
     {
-        return $this->getModel()->with($eager)->where($criteria)->first();
+        return $this->findByCriteria($criteria, $eager)->first();
     }
 
     public function delete(int $item_id, int|null $user_id = null): void
     {
         $item = $this->getModel()->where('id', $item_id);
-        if($user_id != null)
+        if ($user_id != null)
             $item = $item->where('user_id', $user_id);
 
         $item->delete();
     }
 
-    public function list(int $count, array $eager = []): mixed
+    private function findByCriteria($criteria, $eager = []): Builder
     {
-        return $this->getModel()->with($eager)->paginate($count);
+        $list = $this->getModel()->with($eager);
+        if (count($criteria) > 0)
+            $list = $list->where($criteria);
+
+        return $list;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Product;
 
 use App\Http\Requests\V1\Product\CreateProductRequest;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
 interface iProductService
@@ -10,5 +11,4 @@ interface iProductService
     public function create(CreateProductRequest $request): Model;
     public function destroy(int $id, int|null $user_id = null): void;
     public function find(int $id): Model|null;
-    public function list(int $count): mixed;
 }

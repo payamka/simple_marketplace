@@ -4,6 +4,7 @@ namespace App\Services\Product;
 
 use App\Http\Requests\V1\Product\CreateProductRequest;
 use App\Repositories\Product\iProductRepository;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -60,8 +61,18 @@ class ProductService implements iProductService
         );
     }
 
-    public function list(int $count): mixed
+    public function list(Request $request): mixed
     {
-        return $this->product_repo->list($count, ['images']);
+        $criteria = [];
+        if ($request->filled('keyword'))
+            $criteria[] = ['title', 'like', '%' . $request->keyword . '%'];
+        if ($request->filled('max_price'))
+            $criteria[] = ['price', '<=', $request->max_price];
+
+        return $this->product_repo->list(
+            $criteria,
+            $request->input('count', 20),
+            $request->input('sort_by', null)
+        );
     }
 }

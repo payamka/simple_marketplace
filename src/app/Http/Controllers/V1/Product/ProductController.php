@@ -15,9 +15,9 @@ class ProductController extends Controller
     public function __construct(private readonly iProductService $product_service)
     {
     }
-    public function index()
+    public function index(Request $request)
     {
-        $list = $this->product_service->list(20);
+        $list = $this->product_service->list($request);
         if($list)
             return $this->success($list, self::$RESPONSE_OK, Response::HTTP_OK);
 

@@ -13,10 +13,15 @@ class ProductRepository extends AbstractRepository implements iProductRepository
     public function saveImages(Product $product, array $images)
     {
         $image_models = [];
-        foreach ($images as $image){
+        foreach ($images as $image) {
             $image_models[] = new Image($image);
         }
 
         $product->images()->saveMany($image_models);
+    }
+
+    public function list(array $criteria, int $count, string $sort_by = null): mixed
+    {
+        return $this->findAllPaginate($criteria, $count, $sort_by, ['images', 'user']);
     }
 }
