@@ -11,4 +11,5 @@ interface iAbstractRepository
     public function findAllPaginate($criteria, $count, $sort_by = null, $eager = []): mixed;
     public function find($criteria, $eager = []): Model|null;
     public function delete(int $item_id, int|null $user_id = null): void;
+    public function update($item, array $data);
 }

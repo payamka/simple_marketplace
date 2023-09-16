@@ -55,4 +55,9 @@ class AbstractRepository implements iAbstractRepository
 
         return $list;
     }
+
+    public function update($item, array $data)
+    {
+        return $item->update($data);
+    }
 }

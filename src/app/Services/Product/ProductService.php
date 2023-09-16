@@ -4,9 +4,10 @@ namespace App\Services\Product;
 
 use App\Http\Requests\V1\Product\CreateProductRequest;
 use App\Repositories\Product\iProductRepository;
-use App\Repositories\ShippingPrice\iShippingPriceRepository;
+use App\Repositories\ShoppingCart\iShoppingCartRepository;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -15,8 +16,8 @@ class ProductService implements iProductService
 {
     private $product = null;
 
-    public function __construct(private readonly iProductRepository       $product_repo,
-                                private readonly iShippingPriceRepository $shipping_price_repo
+    public function __construct(private readonly iProductRepository      $product_repo,
+                                private readonly iShoppingCartRepository $shopping_cart_repo
     )
     {
     }
@@ -85,12 +86,56 @@ class ProductService implements iProductService
             'id' => $product_id,
             'user_id' => Auth::id()
         ]);
-        
-        if($product) {
+
+        if ($product) {
             $price = $this->product_repo->saveShippingPrice($product, $price);
             return $price;
         }
 
         return false;
+    }
+
+    public function addToCart(int $product_id, int $quantity): Model
+    {
+        $current_item = $this->shopping_cart_repo->find([
+            'product_id' => $product_id,
+            'user_id' => Auth::id()
+        ]);
+
+        if ($current_item) {
+            $this->shopping_cart_repo->update($current_item, ['quantity' => $current_item->quantity + $quantity]);
+            return $current_item;
+        }
+
+        return $this->shopping_cart_repo->create([
+            'product_id' => $product_id,
+            'user_id' => Auth::id(),
+            'quantity' => $quantity
+        ]);
+    }
+
+    public function updateCart(int $product_id, int $quantity): Model|null
+    {
+        $current_item = $this->shopping_cart_repo->find([
+            'product_id' => $product_id,
+            'user_id' => Auth::id()
+        ]);
+
+        if ($current_item)
+            $this->shopping_cart_repo->update($current_item, ['quantity' => $quantity]);
+
+        return $current_item;
+    }
+
+    public function removeFromCart(int $id): void
+    {
+        $this->shopping_cart_repo->deleteFromCart($id, Auth::id());
+    }
+
+    public function cartItems(): LengthAwarePaginator
+    {
+        return $this->shopping_cart_repo->findAllPaginate([
+            'user_id' => Auth::id()
+        ], 99, null, ['product']);
     }
 }
