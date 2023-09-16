@@ -23,4 +23,14 @@ class Product extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function shippingPrices(): HasMany
+    {
+        return $this->hasMany(ShippingPrice::class);
+    }
+
+    public function lastShippingPrice()
+    {
+        return $this->shippingPrices()->orderBy('id', 'desc')->first();
+    }
 }

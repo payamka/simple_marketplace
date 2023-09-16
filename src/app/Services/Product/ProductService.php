@@ -4,6 +4,7 @@ namespace App\Services\Product;
 
 use App\Http\Requests\V1\Product\CreateProductRequest;
 use App\Repositories\Product\iProductRepository;
+use App\Repositories\ShippingPrice\iShippingPriceRepository;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -14,7 +15,9 @@ class ProductService implements iProductService
 {
     private $product = null;
 
-    public function __construct(private readonly iProductRepository $product_repo)
+    public function __construct(private readonly iProductRepository       $product_repo,
+                                private readonly iShippingPriceRepository $shipping_price_repo
+    )
     {
     }
 
@@ -74,5 +77,20 @@ class ProductService implements iProductService
             $request->input('count', 20),
             $request->input('sort_by', null)
         );
+    }
+
+    public function createShippingPrice(int $product_id, int $price): Model|bool
+    {
+        $product = $this->product_repo->find([
+            'id' => $product_id,
+            'user_id' => Auth::id()
+        ]);
+        
+        if($product) {
+            $price = $this->product_repo->saveShippingPrice($product, $price);
+            return $price;
+        }
+
+        return false;
     }
 }

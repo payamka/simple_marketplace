@@ -4,6 +4,7 @@ namespace App\Repositories\Product;
 
 use App\Models\Image;
 use App\Models\Product;
+use App\Models\ShippingPrice;
 use App\Repositories\Contracts\AbstractRepository;
 
 class ProductRepository extends AbstractRepository implements iProductRepository
@@ -18,6 +19,13 @@ class ProductRepository extends AbstractRepository implements iProductRepository
         }
 
         $product->images()->saveMany($image_models);
+    }
+
+    public function saveShippingPrice(Product $product, int $price)
+    {
+        return $product->images()->save(
+            new ShippingPrice(['price' => $price])
+        );
     }
 
     public function list(array $criteria, int $count, string $sort_by = null): mixed
