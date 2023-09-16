@@ -10,10 +10,10 @@ use App\Http\Controllers\V1\Product\CheckoutController;
 
 Route::post('register', [RegisterController::class, 'store']);
 Route::post('login', [LoginController::class, 'show']);
-Route::resource('product', ProductController::class)->except(['destroy']);
+Route::resource('product', ProductController::class)->except(['store', 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('product', ProductController::class)->only(['destroy']);
+    Route::resource('product', ProductController::class)->only(['store', 'destroy']);
     Route::post('shipping_price', [ShippingPriceController::class, 'store']);
     Route::resource('cart', CartController::class);
     Route::post('checkout', [CheckoutController::class, 'store']);

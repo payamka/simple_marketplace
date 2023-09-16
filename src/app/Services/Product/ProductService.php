@@ -12,6 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
 
 class ProductService implements iProductService
 {
@@ -42,14 +43,22 @@ class ProductService implements iProductService
 
         $uploaded = [];
         if (is_array($images))
-            foreach ($images as $image) {
-                $uploaded_path = Storage::disk('public')->put($path, $image);
+            $manager = new ImageManager();
+        foreach ($images as $image) {
+            $uploaded_path = Storage::disk('public')->put($path, $image);
 
-                if ($uploaded_path)
-                    $uploaded[]['path'] = $uploaded_path;
+            if ($uploaded_path) {
+                $uploaded[]['path'] = $uploaded_path;
 
-                $this->product_repo->saveImages($this->product, $uploaded);
+                $image_full_path = Storage::disk('public')->path($uploaded_path);
+
+                $image = $manager->make($image_full_path);
+
+                $image->widen(1200)->save($image_full_path);
             }
+
+            $this->product_repo->saveImages($this->product, $uploaded);
+        }
 
         return collect($uploaded)->pluck('path');
     }
