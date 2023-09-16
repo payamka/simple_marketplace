@@ -5,6 +5,7 @@ namespace App\Services\Product;
 use App\Http\Requests\V1\Product\CreateProductRequest;
 use App\Repositories\Product\iProductRepository;
 use App\Repositories\ShoppingCart\iShoppingCartRepository;
+use App\Repositories\Order\iOrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,7 +18,8 @@ class ProductService implements iProductService
     private $product = null;
 
     public function __construct(private readonly iProductRepository      $product_repo,
-                                private readonly iShoppingCartRepository $shopping_cart_repo
+                                private readonly iShoppingCartRepository $shopping_cart_repo,
+                                private readonly iOrderRepository        $order_repo
     )
     {
     }
@@ -137,5 +139,33 @@ class ProductService implements iProductService
         return $this->shopping_cart_repo->findAllPaginate([
             'user_id' => Auth::id()
         ], 99, null, ['product']);
+    }
+
+    public function addOrder(): Model
+    {
+        $total_price = $this->calqulatePrices();
+        $order = $this->order_repo->create([
+            'user_id' => Auth::id(),
+            'total_cost' => $total_price
+        ]);
+
+        $this->shopping_cart_repo->updateCartItemsOrderId($order->id);
+
+        return $order;
+    }
+
+    private function calqulatePrices(): int
+    {
+        $cart_items = $this->cartItems();
+        $total_amount = 0;
+
+        foreach ($cart_items as $cart_item) {
+            $quantity = $cart_item->quantity;
+            $total_amount += $quantity * $cart_item->product->price;
+            if (isset($cart_item->product->lastShippingPrice[0]))
+                $total_amount += $quantity * $cart_item->product->lastShippingPrice[0]->price;
+        }
+
+        return $total_amount;
     }
 }

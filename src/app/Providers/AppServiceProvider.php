@@ -11,6 +11,8 @@ use App\Repositories\ShippingPrice\iShippingPriceRepository;
 use App\Repositories\ShippingPrice\ShippingPriceRepository;
 use App\Repositories\ShoppingCart\iShoppingCartRepository;
 use App\Repositories\ShoppingCart\ShoppingCartRepository;
+use App\Repositories\Order\iOrderRepository;
+use App\Repositories\Order\OrderRepository;
 use App\Services\User\iUserService;
 use App\Services\User\UserService;
 use App\Services\Product\iProductService;
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(iProductRepository::class, ProductRepository::class);
         app()->bind(iShippingPriceRepository::class, ShippingPriceRepository::class);
         app()->bind(iShoppingCartRepository::class, ShoppingCartRepository::class);
+        app()->bind(iOrderRepository::class, OrderRepository::class);
         app()->bind(iProductService::class, ProductService::class);
     }
 }

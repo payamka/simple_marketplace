@@ -13,6 +13,7 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = ['user_id', 'title', 'price'];
+    protected $with = ['lastShippingPrice'];
 
     public function images(): hasMany
     {
@@ -31,6 +32,6 @@ class Product extends Model
 
     public function lastShippingPrice()
     {
-        return $this->shippingPrices()->orderBy('id', 'desc')->first();
+        return $this->shippingPrices()->orderBy('id', 'DESC')->take(1);
     }
 }

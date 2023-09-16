@@ -17,4 +17,5 @@ interface iProductService
     public function updateCart(int $product_id, int $quantity): Model|null;
     public function removeFromCart(int $id): void;
     public function cartItems(): LengthAwarePaginator;
+    public function addOrder(): Model;
 }

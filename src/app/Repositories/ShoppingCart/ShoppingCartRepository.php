@@ -4,6 +4,7 @@ namespace App\Repositories\ShoppingCart;
 
 use App\Models\ShoppingCart;
 use App\Repositories\Contracts\AbstractRepository;
+use Illuminate\Support\Facades\Auth;
 
 class ShoppingCartRepository extends AbstractRepository implements iShoppingCartRepository
 {
@@ -17,5 +18,12 @@ class ShoppingCartRepository extends AbstractRepository implements iShoppingCart
         ]);
 
         if ($product) $product->delete();
+    }
+
+    public function updateCartItemsOrderId(int $order_id): void
+    {
+        $this->getModel()->where('user_id', Auth::id())
+            ->where('order_id', null)
+            ->update(['order_id' => $order_id]);
     }
 }
