@@ -41,22 +41,22 @@ class ProductService implements iProductService
         if ($this->product == null)
             return [];
 
-        $uploaded = [];
-        if (is_array($images))
+        if (is_array($images)) {
             $manager = new ImageManager();
-        foreach ($images as $image) {
-            $uploaded_path = Storage::disk('public')->put($path, $image);
 
-            if ($uploaded_path) {
-                $uploaded[]['path'] = $uploaded_path;
+            foreach ($images as $image) {
+                $uploaded_path = Storage::disk('public')->put($path, $image);
 
-                $image_full_path = Storage::disk('public')->path($uploaded_path);
+                if ($uploaded_path) {
+                    $uploaded[]['path'] = $uploaded_path;
 
-                $image = $manager->make($image_full_path);
+                    $image_full_path = Storage::disk('public')->path($uploaded_path);
 
-                $image->widen(1200)->save($image_full_path);
+                    $image = $manager->make($image_full_path);
+
+                    $image->widen(1200)->save($image_full_path);
+                }
             }
-
             $this->product_repo->saveImages($this->product, $uploaded);
         }
 

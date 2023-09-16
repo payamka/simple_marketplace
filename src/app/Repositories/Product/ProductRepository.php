@@ -14,6 +14,7 @@ class ProductRepository extends AbstractRepository implements iProductRepository
     public function saveImages(Product $product, array $images)
     {
         $image_models = [];
+
         foreach ($images as $image) {
             $image_models[] = new Image($image);
         }

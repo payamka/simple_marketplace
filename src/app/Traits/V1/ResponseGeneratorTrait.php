@@ -31,7 +31,7 @@ trait ResponseGeneratorTrait
 
     public function getResponse($data)
     {
-        $responseJson = ['code' => $this->header_code, 'hasError' => $this->has_error,];
+        $responseJson = ['code' => $this->response_code, 'hasError' => $this->has_error,];
         if ($this->has_error) $responseJson['errors'] = $data; else $responseJson['data'] = $data;
 
         return response()->json($responseJson, $this->header_code);
