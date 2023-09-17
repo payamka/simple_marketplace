@@ -110,7 +110,8 @@ class ProductService implements iProductService
     {
         $current_item = $this->shopping_cart_repo->find([
             'product_id' => $product_id,
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'order_id' => null
         ]);
 
         if ($current_item) {
@@ -129,7 +130,8 @@ class ProductService implements iProductService
     {
         $current_item = $this->shopping_cart_repo->find([
             'product_id' => $product_id,
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'order_id' => null
         ]);
 
         if ($current_item)
@@ -146,16 +148,18 @@ class ProductService implements iProductService
     public function cartItems(): LengthAwarePaginator
     {
         return $this->shopping_cart_repo->findAllPaginate([
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'order_id' => null
         ], 99, null, ['product']);
     }
 
-    public function addOrder(): Model
+    public function addOrder(bool $delivery = false): Model
     {
-        $total_price = $this->calqulatePrices();
+        $total_price = $this->calqulatePrices($delivery);
         $order = $this->order_repo->create([
             'user_id' => Auth::id(),
-            'total_cost' => $total_price
+            'total_cost' => $total_price,
+            'delivery' => $delivery
         ]);
 
         $this->shopping_cart_repo->updateCartItemsOrderId($order->id);
@@ -163,7 +167,7 @@ class ProductService implements iProductService
         return $order;
     }
 
-    private function calqulatePrices(): int
+    private function calqulatePrices($delivery): int
     {
         $cart_items = $this->cartItems();
         $total_amount = 0;
@@ -171,7 +175,7 @@ class ProductService implements iProductService
         foreach ($cart_items as $cart_item) {
             $quantity = $cart_item->quantity;
             $total_amount += $quantity * $cart_item->product->price;
-            if (isset($cart_item->product->lastShippingPrice[0]))
+            if ($delivery && isset($cart_item->product->lastShippingPrice[0]))
                 $total_amount += $quantity * $cart_item->product->lastShippingPrice[0]->price;
         }
 

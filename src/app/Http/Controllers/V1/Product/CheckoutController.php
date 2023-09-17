@@ -15,7 +15,7 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
-        $order = $this->produce_service->addOrder();
+        $order = $this->produce_service->addOrder($request->input('delivery', false));
         NewOrderEvent::dispatch($order);
         return $this->success($order, self::$RESPONSE_OK, \Symfony\Component\HttpFoundation\Response::HTTP_CREATED);
     }

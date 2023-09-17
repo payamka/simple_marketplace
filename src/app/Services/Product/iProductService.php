@@ -10,12 +10,22 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface iProductService
 {
     public function create(CreateProductRequest $request): Model;
+
     public function destroy(int $id, int|null $user_id = null): void;
+
     public function find(int $id): Model|null;
+
     public function createShippingPrice(int $product_id, int $price): Model|bool;
+
     public function addToCart(int $product_id, int $quantity): Model;
+
     public function updateCart(int $product_id, int $quantity): Model|null;
+
     public function removeFromCart(int $id): void;
+
     public function cartItems(): LengthAwarePaginator;
-    public function addOrder(): Model;
+
+    public function addOrder(bool $delivery = false): Model;
+
+    public function list(Request $request): mixed;
 }

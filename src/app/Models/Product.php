@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
 {
@@ -32,6 +33,13 @@ class Product extends Model
 
     public function lastShippingPrice()
     {
-        return $this->shippingPrices()->orderBy('id', 'DESC')->take(1);
+        return $this->hasMany(ShippingPrice::class)->orderBy('id', 'DESC')->take(1);
+    }
+
+    protected function price(): Attribute
+    {
+        return Attribute::make(
+            get: fn(int $value) => $value + (isset($this->lastShippingPrice[0]) ? $this->lastShippingPrice[0]->price : 0),
+        );
     }
 }

@@ -14,7 +14,8 @@ class ShoppingCartRepository extends AbstractRepository implements iShoppingCart
     {
         $product = $this->find([
             'product_id' => $product_id,
-            'user_id' => $user_id
+            'user_id' => $user_id,
+            'order_id' => null
         ]);
 
         if ($product) $product->delete();
