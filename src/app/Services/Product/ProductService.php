@@ -91,6 +91,20 @@ class ProductService implements iProductService
         );
     }
 
+//    public function list(array $criteria, int $count, string $sort_by = null, string $max_price = null): mixed
+//    {
+//        $list = $this->findAllPaginate($criteria, $count, ['images', 'user']);
+//        if (is_null($sort_by))
+//            $list = $list->sortByDesc('id');
+//        else
+//            $list = $list->sortBy('price');
+//
+//        if(!is_null($max_price))
+//            $list = $list->where('price', '<=', $max_price);
+//
+//        return $list;
+//    }
+
     public function createShippingPrice(int $product_id, int $price): Model|bool
     {
         $product = $this->product_repo->find([
