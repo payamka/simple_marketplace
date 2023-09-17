@@ -8,3 +8,5 @@ RUN apt-get update
 RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
 docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
 docker-php-ext-install gd
+
+RUN apt-get install sqlite3

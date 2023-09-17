@@ -41,6 +41,7 @@ class ProductService implements iProductService
         if ($this->product == null)
             return [];
 
+        $uploaded = [];
         if (is_array($images)) {
             $manager = new ImageManager();
 

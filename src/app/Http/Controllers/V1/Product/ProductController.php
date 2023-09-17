@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Services\Product\iProductService;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use function PHPUnit\Framework\stringEqualsStringIgnoringLineEndings;
 
 class ProductController extends Controller
 {
